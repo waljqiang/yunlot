@@ -1,0 +1,12 @@
+{
+    "name": "waljqiang/yunlot",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "waljqiang",
+            "email": "waljqiang@163.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
