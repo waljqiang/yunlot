@@ -8,5 +8,13 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {}
+    "require": {
+        "php": ">=5.4",
+        "waljqiang/encode": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Waljqiang\\Yunlot\\": "src/"
+        }
+    }
 }
