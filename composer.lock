@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "206c4ba4d56428f8e069c3b24d0207f2",
+    "content-hash": "3d981afc0aef39266e670c975d176622",
     "packages": [
         {
             "name": "waljqiang/encode",
-            "version": "dev-master",
+            "version": "1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/waljqiang/encode.git",
-                "reference": "ad6a8043e2515b46272fea54ab3ad84014b4eb9c"
+                "reference": "e8d126da5b1dccb58b455903cc8869aac36ca923"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/waljqiang/encode/zipball/ad6a8043e2515b46272fea54ab3ad84014b4eb9c",
-                "reference": "ad6a8043e2515b46272fea54ab3ad84014b4eb9c",
+                "url": "https://api.github.com/repos/waljqiang/encode/zipball/e8d126da5b1dccb58b455903cc8869aac36ca923",
+                "reference": "e8d126da5b1dccb58b455903cc8869aac36ca923",
                 "shasum": ""
             },
             "require": {
@@ -41,15 +41,13 @@
                 }
             ],
             "description": "php encode",
-            "time": "2020-04-17T07:33:02+00:00"
+            "time": "2020-05-11T03:46:21+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "dev",
-    "stability-flags": {
-        "waljqiang/encode": 20
-    },
+    "minimum-stability": "stable",
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
