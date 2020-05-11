@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "waljqiang/encode",
-            "version": "1.1",
+            "version": "1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/waljqiang/encode.git",
-                "reference": "e8d126da5b1dccb58b455903cc8869aac36ca923"
+                "reference": "66cad3aaa2f326fa993cb883fd64aa74b09faf9b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/waljqiang/encode/zipball/e8d126da5b1dccb58b455903cc8869aac36ca923",
-                "reference": "e8d126da5b1dccb58b455903cc8869aac36ca923",
+                "url": "https://api.github.com/repos/waljqiang/encode/zipball/66cad3aaa2f326fa993cb883fd64aa74b09faf9b",
+                "reference": "66cad3aaa2f326fa993cb883fd64aa74b09faf9b",
                 "shasum": ""
             },
             "require": {
@@ -41,7 +41,7 @@
                 }
             ],
             "description": "php encode",
-            "time": "2020-05-11T03:46:21+00:00"
+            "time": "2020-05-11T08:43:54+00:00"
         }
     ],
     "packages-dev": [],
