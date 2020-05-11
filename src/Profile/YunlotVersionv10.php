@@ -6,6 +6,10 @@ use Waljqiang\Encode\Encode;
 class YunlotVersionv10 implements ProfileInterface{
 	const VERSION = "v1.0";
 
+	private $encodeType = [
+		"2" => "AES"
+	];
+
 	private $header;
 	private $body;
 	private $now;
@@ -20,21 +24,21 @@ class YunlotVersionv10 implements ProfileInterface{
 	 */
 	private static $encode;
 
-	public function setEncode($token,$type,$encodeConfig){
-		self::$encode = new Encode($token,$type,$encodeConfig);
+	public function setEncode($config = []){
+		if(isset($config["encode"])){
+			self::$encode = new Encode($config["encode"]["token"],$config["encode"]["type"],["key" => $config["encode"]["key"]]);
+		}
 	}
 
 	public function getVersion(){
 		return self::VERSION;
 	}
 
-	public function setHeader($protocolType,$encodeType){
+	public function setHeader($protocolType,$encode){
 		$this->header = [
 			"protocol" => self::VERSION,
 			"type" => $protocolType,
-			"encode" => [
-				"type" => $encodeType
-			]
+			"encode" => $encode
 		];
 		return $this;
 	}
@@ -50,6 +54,9 @@ class YunlotVersionv10 implements ProfileInterface{
 					$this->body = $body;
 					break;
 				case "2":
+					if(isset($this->header["encode"]["token"]) && isset($this->header["encode"]["key"])){
+						self::$encode = new Encode($this->getHeader("encode.token"),$this->encodeType[$this->getHeader("encode.type")],['key' => $this->getHeader("encode.key")]);
+					}
 					self::$encode->setNonce($nonce);
 					self::$encode->setTimeStamp($timeStamp);
 					$data = self::$encode->encode(json_encode($body,JSON_UNESCAPED_UNICODE));
@@ -83,7 +90,7 @@ class YunlotVersionv10 implements ProfileInterface{
 		return $this->now;
 	}
 
-	public function explain($str){
+	public function parse($str){
 		$data = json_decode($str,true);
 		if(!isset($data["header"]) || !isset($data["body"]) || !isset($data["now"])){
 			throw new \Exception("data format is error",-1);
@@ -95,10 +102,7 @@ class YunlotVersionv10 implements ProfileInterface{
 					$this->body = $data["body"];
 					break;
 				case '2':
-					self::$encode->setNonce($this->getHeader("encode.nonce"));
-					self::$encode->setTimeStamp($this->getHeader("encode.timestamp"));
-					self::$encode->setSignature($this->getHeader("encode.signature"));
-					$this->body = json_decode(self::$encode->decode($data["body"]),true);
+					$this->body = $this->decryptBody($data["body"]);
 					break;
 				default:
 					$this->body = $data["body"];
@@ -109,6 +113,16 @@ class YunlotVersionv10 implements ProfileInterface{
 		}catch(\Exception $e){
 			throw new \Exception("decode body failure",-1);
 		}
+	}
+
+	public function decryptBody($data){
+		if(isset($this->header["encode"]["token"]) && isset($this->header["encode"]["key"])){
+			self::$encode = new Encode($this->getHeader("encode.token"),$this->encodeType[$this->getHeader("encode.type")],['key' => $this->getHeader("encode.key")]);
+		}
+		self::$encode->setNonce($this->getHeader("encode.nonce"));
+		self::$encode->setTimeStamp($this->getHeader("encode.timestamp"));
+		self::$encode->setSignature($this->getHeader("encode.signature"));
+		return json_decode(self::$encode->decode($data),true);
 	}
 
 	public function out(){

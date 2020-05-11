@@ -17,14 +17,14 @@ class Yunlot{
         return self::$instance[$className];
 	}
 
-	public function init($version,$token = "waljqiang",$type = Waljqiang\Encode\Encode::AES,$config = ["key" => "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG"]){
+	public function init($version = 'v1.0',$config = []){
 		$this->setVersion($version);
 		$className = "Waljqiang\\Yunlot\\Profile\\" . "YunlotVersion" . str_replace(".","",$version);
 		if(!class_exists($className)){
 			throw new \Exception("Unsupport yunlot version",-1);
 		}
 		$this->profile = new $className();
-		$this->profile->setEncode($token,$type,$config);
+		$this->profile->setEncode($config);
 		return $this;
 	}
 
