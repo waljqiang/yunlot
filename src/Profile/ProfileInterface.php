@@ -14,4 +14,12 @@ interface ProfileInterface{
 	 * return the body of the yunlot
 	 */
 	public function getBody($key = "");
+
+	public function getNow();
+
+	public function setHeader($header);
+
+	public function setBody($body,$nonce = "",$timeStamp = "");
+
+	public function setNow($now);
 }

@@ -2,6 +2,7 @@
 namespace Waljqiang\Yunlot;
 
 use Waljqiang\Yunlot\Profile\ProfileInterface;
+use Waljqiang\Yunlot\Exception\YunlotException;
 
 class Yunlot{
 	private $version = "v1.0";
@@ -21,7 +22,7 @@ class Yunlot{
 		$this->setVersion($version);
 		$className = "Waljqiang\\Yunlot\\Profile\\" . "YunlotVersion" . str_replace(".","",$version);
 		if(!class_exists($className)){
-			throw new \Exception("Unsupport yunlot version",-1);
+			throw new YunlotException("Unsupport yunlot version",YunlotException::UNSUPPORT_YUNLOT_VERSION);
 		}
 		$this->profile = new $className();
 		$this->profile->setEncode($config);
