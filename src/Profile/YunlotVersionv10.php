@@ -42,6 +42,16 @@ class YunlotVersionv10 extends YunlotVersion{
 				"type" => 1
 			]
 		]);
+		$this->checkHeader();
+		if($this->getHeader("encode.type" == 2) && isset($this->header["encode"]["token"]) && isset($this->header["encode"]["key"])){
+			$this->init([
+				"encode" => [
+					"token" => $this->getHeader("encode.token"),
+					"type" => "AES",
+					"key" => $this->getHeader("encode.key")
+				]
+			]);
+		}
 		return $this;
 	}
 
@@ -56,9 +66,6 @@ class YunlotVersionv10 extends YunlotVersion{
 					$this->body = $body;
 					break;
 				case "2":
-					if(isset($this->header["encode"]["token"]) && isset($this->header["encode"]["key"])){
-						self::$encode->init($this->getHeader("encode.token"),$this->encodeType[$this->getHeader("encode.type")],['key' => $this->getHeader("encode.key")]);
-					}
 					self::$encode->setNonce($nonce);
 					self::$encode->setTimeStamp($timeStamp);
 					$data = self::$encode->encode(json_encode($body,JSON_UNESCAPED_UNICODE));
@@ -95,8 +102,7 @@ class YunlotVersionv10 extends YunlotVersion{
 	public function parse($str){
 		$data = json_decode($str,true);
 		$this->checkData($data);
-		$this->header = $data["header"];
-		$this->checkHeader();
+		$this->setHeader($data["header"]);
 		try{
 			switch ($this->getHeader("encode.type","1")) {
 				case '1':
@@ -119,9 +125,6 @@ class YunlotVersionv10 extends YunlotVersion{
 
 	public function decryptBody($data){
 		try{
-			if(isset($this->header["encode"]["token"]) && isset($this->header["encode"]["key"])){
-				self::$encode->init($this->getHeader("encode.token"),$this->encodeType[$this->getHeader("encode.type")],['key' => $this->getHeader("encode.key")]);
-			}
 			self::$encode->setNonce($this->getHeader("encode.nonce"));
 			self::$encode->setTimeStamp($this->getHeader("encode.timestamp"));
 			self::$encode->setSignature($this->getHeader("encode.signature"));

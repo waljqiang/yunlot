@@ -9,7 +9,7 @@
     ],
     "require": {
         "php": ">=5.4",
-        "waljqiang/encode": "^3.0"
+        "waljqiang/encode": "^4.1"
     },
     "autoload": {
         "psr-4": {
