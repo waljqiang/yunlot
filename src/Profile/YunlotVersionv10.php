@@ -25,8 +25,13 @@ class YunlotVersionv10 extends YunlotVersion{
 		self::$encode = new Encode();
 	}
 
-	public function init($config){
+	public function init($config,$clear = true){
 		self::$encode->init($config["encode"]["token"],$config["encode"]["type"],["key" => $config["encode"]["key"]]);
+		if($clear){
+			$this->header = NULL;
+			$this->body = NULL;
+			$this->now = NULL;
+		}
 	}
 
 	public function getVersion(){
@@ -50,7 +55,7 @@ class YunlotVersionv10 extends YunlotVersion{
 					"type" => "AES",
 					"key" => $this->getHeader("encode.key")
 				]
-			]);
+			],false);
 		}
 		return $this;
 	}
