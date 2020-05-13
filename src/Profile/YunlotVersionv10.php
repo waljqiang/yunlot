@@ -15,32 +15,33 @@ class YunlotVersionv10 extends YunlotVersion{
 	private $body;
 	private $now;
 
-	public function __construct(){
-
-	}
-
 	/**
 	 * 加解密类
 	 * @var [type]
 	 */
 	private static $encode;
 
-	public function setEncode($config = []){
-		if(isset($config["encode"])){
-			self::$encode = new Encode($config["encode"]["token"],$config["encode"]["type"],["key" => $config["encode"]["key"]]);
-		}
+	public function __construct(){
+		self::$encode = new Encode();
+	}
+
+	public function init($config){
+		self::$encode->init($config["encode"]["token"],$config["encode"]["type"],["key" => $config["encode"]["key"]]);
 	}
 
 	public function getVersion(){
 		return self::VERSION;
 	}
 
-	public function setHeader($protocolType = 2,$encode = ["type" => "1"]){
-		$this->header = [
+	public function setHeader($headers){
+		$headers = array_merge(["protocol" => self::VERSION],$headers);
+		$this->header = array_intersect_key($headers,[
 			"protocol" => self::VERSION,
-			"type" => $protocolType,
-			"encode" => $encode
-		];
+			"type" => 1,
+			"encode" => [
+				"type" => 1
+			]
+		]);
 		return $this;
 	}
 
@@ -56,7 +57,7 @@ class YunlotVersionv10 extends YunlotVersion{
 					break;
 				case "2":
 					if(isset($this->header["encode"]["token"]) && isset($this->header["encode"]["key"])){
-						self::$encode = new Encode($this->getHeader("encode.token"),$this->encodeType[$this->getHeader("encode.type")],['key' => $this->getHeader("encode.key")]);
+						self::$encode->init($this->getHeader("encode.token"),$this->encodeType[$this->getHeader("encode.type")],['key' => $this->getHeader("encode.key")]);
 					}
 					self::$encode->setNonce($nonce);
 					self::$encode->setTimeStamp($timeStamp);
@@ -119,7 +120,7 @@ class YunlotVersionv10 extends YunlotVersion{
 	public function decryptBody($data){
 		try{
 			if(isset($this->header["encode"]["token"]) && isset($this->header["encode"]["key"])){
-				self::$encode = new Encode($this->getHeader("encode.token"),$this->encodeType[$this->getHeader("encode.type")],['key' => $this->getHeader("encode.key")]);
+				self::$encode->init($this->getHeader("encode.token"),$this->encodeType[$this->getHeader("encode.type")],['key' => $this->getHeader("encode.key")]);
 			}
 			self::$encode->setNonce($this->getHeader("encode.nonce"));
 			self::$encode->setTimeStamp($this->getHeader("encode.timestamp"));
