@@ -72,9 +72,7 @@ class YunlotVersionv10 extends YunlotVersion{
 					$this->body = $body;
 					break;
 				case "2":
-					self::$encode->setNonce($nonce);
-					self::$encode->setTimeStamp($timeStamp);
-					$data = self::$encode->encode(json_encode($body,JSON_UNESCAPED_UNICODE));
+					$data = $this->encrypt(json_encode($body,JSON_UNESCAPED_UNICODE),$nonce,$timeStamp);
 					$this->header["encode"] = array_merge($this->header["encode"],[
 						"nonce" => $data["nonce"],
 						"timestamp" => $data["timestamp"],
@@ -115,7 +113,7 @@ class YunlotVersionv10 extends YunlotVersion{
 					$this->body = $data["body"];
 					break;
 				case '2':
-					$this->body = $this->decryptBody($data["body"]);
+					$this->body = $this->decrypt($data["body"]);
 					break;
 				default:
 					$this->body = $data["body"];
@@ -129,7 +127,13 @@ class YunlotVersionv10 extends YunlotVersion{
 		}
 	}
 
-	public function decryptBody($data){
+	public function encrypt($string,$nonce,$timeStamp){
+		self::$encode->setNonce($nonce);
+		self::$encode->setTimeStamp($timeStamp);
+		return self::$encode->encode($string);
+	}
+
+	public function decrypt($data){
 		try{
 			self::$encode->setNonce($this->getHeader("encode.nonce"));
 			self::$encode->setTimeStamp($this->getHeader("encode.timestamp"));
