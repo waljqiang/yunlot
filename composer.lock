@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cec3e128e60cc6f50a5ec3c7442a1c7e",
+    "content-hash": "2631660a450d622ac7b9a8bc6dfa2698",
     "packages": [
         {
             "name": "waljqiang/encode",
-            "version": "4.1",
+            "version": "5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/waljqiang/encode.git",
-                "reference": "d45b921b049de16a321fbeaffa3abbad4038215c"
+                "reference": "7e4895338babbc187fb92e2b9db4a6893b279e7e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/waljqiang/encode/zipball/d45b921b049de16a321fbeaffa3abbad4038215c",
-                "reference": "d45b921b049de16a321fbeaffa3abbad4038215c",
+                "url": "https://api.github.com/repos/waljqiang/encode/zipball/7e4895338babbc187fb92e2b9db4a6893b279e7e",
+                "reference": "7e4895338babbc187fb92e2b9db4a6893b279e7e",
                 "shasum": ""
             },
             "require": {
@@ -41,7 +41,7 @@
                 }
             ],
             "description": "php encode",
-            "time": "2020-05-13T03:47:23+00:00"
+            "time": "2020-05-21T02:08:46+00:00"
         }
     ],
     "packages-dev": [],

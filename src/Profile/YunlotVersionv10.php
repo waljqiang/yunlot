@@ -8,6 +8,7 @@ class YunlotVersionv10 extends YunlotVersion{
 	const VERSION = "v1.0";
 
 	private $encodeType = [
+		"1" => "",
 		"2" => "AES"
 	];
 
@@ -26,7 +27,7 @@ class YunlotVersionv10 extends YunlotVersion{
 	}
 
 	public function init($config,$clear = true){
-		self::$encode->init($config["encode"]["token"],$config["encode"]["type"],["key" => $config["encode"]["key"]]);
+		self::$encode->init($config["encode"]["token"],$this->encodeType[$config["encode"]["type"]],["key" => $config["encode"]["key"]]);
 		if($clear){
 			$this->header = NULL;
 			$this->body = NULL;
@@ -52,7 +53,7 @@ class YunlotVersionv10 extends YunlotVersion{
 			$this->init([
 				"encode" => [
 					"token" => $this->getHeader("encode.token"),
-					"type" => "AES",
+					"type" => "2",
 					"key" => $this->getHeader("encode.key")
 				]
 			],false);
