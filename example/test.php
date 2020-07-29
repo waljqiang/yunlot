@@ -2,7 +2,7 @@
 require_once __DIR__ . "/../vendor/autoload.php";
 use Waljqiang\Yunlot\Yunlot;
 try{
-	$token = "yuncore";
+	$token = "cloudnetlot";
 	$type = "2";
 	$key = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG";
 	$nonce = "abcdef";
