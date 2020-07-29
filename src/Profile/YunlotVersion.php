@@ -18,7 +18,19 @@ abstract class YunlotVersion implements ProfileInterface{
 
 	abstract public function setHeader($header);
 
-	abstract public function setBody($body,$nonce = "",$timeStamp = "");
+	abstract public function setBody($body);
+
+	abstract public function setNow($now);
+
+	public function getRandomStr($length = 16){
+		$str = "";
+		$str_pol = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz";
+		$max = strlen($str_pol) - 1;
+		for ($i = 0; $i < $length; $i++) {
+			$str .= $str_pol[mt_rand(0, $max)];
+		}
+		return $str;
+	}
 
 	public function array_get($array,$key,$default = NULL){
 		foreach (explode(".",$key) as $segment) {

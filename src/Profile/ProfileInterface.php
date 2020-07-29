@@ -19,7 +19,8 @@ interface ProfileInterface{
 
 	public function setHeader($header);
 
-	public function setBody($body,$nonce = "",$timeStamp = "");
+	public function setBody($body);
 
 	public function setNow($now);
+
 }

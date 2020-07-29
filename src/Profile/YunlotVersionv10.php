@@ -28,36 +28,21 @@ class YunlotVersionv10 extends YunlotVersion{
 
 	public function init($config,$clear = true){
 		self::$encode->init($config["encode"]["token"],$this->encodeType[$config["encode"]["type"]],["key" => $config["encode"]["key"]]);
-		if($clear){
-			$this->header = NULL;
-			$this->body = NULL;
-			$this->now = NULL;
-		}
+		$this->header = [
+			"protocol" => self::VERSION,
+			"type" => "",
+			"encode" => $config["encode"]["type"]
+		];
+		return $this;
 	}
 
 	public function getVersion(){
 		return self::VERSION;
 	}
 
-	public function setHeader($headers){
-		$headers = array_merge(["protocol" => self::VERSION],$headers);
-		$this->header = array_intersect_key($headers,[
-			"protocol" => self::VERSION,
-			"type" => 1,
-			"encode" => [
-				"type" => 1
-			]
-		]);
+	public function setHeader($headers = []){
+		$this->header = array_merge($this->header,$headers);
 		$this->checkHeader();
-		if($this->getHeader("encode.type" == 2) && isset($this->header["encode"]["token"]) && isset($this->header["encode"]["key"])){
-			$this->init([
-				"encode" => [
-					"token" => $this->getHeader("encode.token"),
-					"type" => "2",
-					"key" => $this->getHeader("encode.key")
-				]
-			],false);
-		}
 		return $this;
 	}
 
@@ -65,15 +50,15 @@ class YunlotVersionv10 extends YunlotVersion{
 		return !empty($key) ? $this->array_get($this->header,$key,$default) : $this->header;
 	}
 
-	public function setBody($body,$nonce = "",$timeStamp = ""){
+	public function setBody($body){
 		try{
-			switch ($this->getHeader("encode.type")) {
-				case "1":
+			switch ($this->getHeader("encode")) {
+				case 1:
 					$this->body = $body;
 					break;
-				case "2":
-					$data = $this->encrypt(json_encode($body,JSON_UNESCAPED_UNICODE),$nonce,$timeStamp);
-					$this->header["encode"] = array_merge($this->header["encode"],[
+				case 2:
+					$data = $this->encrypt(json_encode($body,JSON_UNESCAPED_UNICODE));
+					$this->setHeader([
 						"nonce" => $data["nonce"],
 						"timestamp" => $data["timestamp"],
 						"signature" => $data["signature"]
@@ -94,6 +79,18 @@ class YunlotVersionv10 extends YunlotVersion{
 		return !empty($key) ? $this->array_get($this->body,$key,$default) : $this->body;
 	}
 
+	public function setNonce($nonce = ""){
+		$nonce = !empty($nonce) ? $nonce : $this->getRandomStr(6);
+		$this->setHeader(["nonce" => $nonce]);
+		return $this;
+	}
+
+	public function setTimestamp($timestamp = ""){
+		$timestamp = !empty($timestamp) ? $timestamp : time();
+		$this->setHeader(["timestamp" => $timestamp]);
+		return $this;
+	}
+
 	public function setNow($now = ""){
 		$this->now = !empty($now) ? $now : time();
 		return $this;
@@ -108,18 +105,17 @@ class YunlotVersionv10 extends YunlotVersion{
 		$this->checkData($data);
 		$this->setHeader($data["header"]);
 		try{
-			switch ($this->getHeader("encode.type","1")) {
-				case '1':
+			switch ($this->getHeader("encode","1")) {
+				case 1:
 					$this->body = $data["body"];
 					break;
-				case '2':
+				case 2:
 					$this->body = $this->decrypt($data["body"]);
 					break;
 				default:
 					$this->body = $data["body"];
 					break;
 			}
-			$this->checkBody();
 			$this->now = $data["now"];
 			return $this;
 		}catch(\Exception $e){
@@ -127,17 +123,19 @@ class YunlotVersionv10 extends YunlotVersion{
 		}
 	}
 
-	public function encrypt($string,$nonce,$timeStamp){
+	private function encrypt($string){
+		$nonce = !empty($this->getHeader("nonce")) ? $this->getHeader("nonce") : $this->getRandomStr(6);
+		$timestamp = !empty($this->getHeader("timestamp")) ? $this->getHeader("timestamp") : time();
 		self::$encode->setNonce($nonce);
-		self::$encode->setTimeStamp($timeStamp);
+		self::$encode->setTimeStamp($timestamp);
 		return self::$encode->encode($string);
 	}
 
-	public function decrypt($data){
+	private function decrypt($data){
 		try{
-			self::$encode->setNonce($this->getHeader("encode.nonce"));
-			self::$encode->setTimeStamp($this->getHeader("encode.timestamp"));
-			self::$encode->setSignature($this->getHeader("encode.signature"));
+			self::$encode->setNonce($this->getHeader("nonce"));
+			self::$encode->setTimeStamp($this->getHeader("timestamp"));
+			self::$encode->setSignature($this->getHeader("signature"));
 			$result = json_decode(self::$encode->decode($data),true);
 			if(empty($result)){
 				throw new YunlotException("The data of yunlot v1.0 decrypt failure",YunlotException::YUNLOT10_DECODE_ERROR);
@@ -167,19 +165,12 @@ class YunlotVersionv10 extends YunlotVersion{
 			throw new YunlotException("The header of yunlot v1.0 must be protocol 、type and encode",YunlotException::YUNLOT10_HEADER_FORMAT_ERROR);
 		}
 		if($this->getHeader("protocol") == $this->getVersion()){
-			if(!in_array($this->getHeader("type"),["1","2","3"])){
-				throw new YunlotException("The type of the header in yunlot v1.0 must be '1'、'2' or '3'",YunlotException::YUNLOT10_HEADER_TYPE_ERROR);
+			if(!in_array($this->getHeader("type"),[1,2])){
+				throw new YunlotException("The type of the header in yunlot v1.0 must be '1' or '2'",YunlotException::YUNLOT10_HEADER_TYPE_ERROR);
 			}
-			if(!in_array($this->getHeader("encode.type"),["1","2"])){
-				throw new YunlotException("The encode type of the header in yunlot v1.0 must be '1' or '2'",YunlotException::YUNLOT10_HEADER_TYPE_ERROR);
+			if(!in_array($this->getHeader("encode"),[1,2])){
+				throw new YunlotException("The encode of the header in yunlot v1.0 must be '1' or '2'",YunlotException::YUNLOT10_HEADER_TYPE_ERROR);
 			}
-		}
-	}
-
-	protected function checkBody(){
-		$keys = array_keys($this->body);
-		if($var = array_diff($keys,["active","system","network","wifi","repeat","user","time_reboot","child","comm_result"])){
-			throw new YunlotException("The keys [" . implode(",",$var) . "] is not defined in the body of the yunlot v1.0",YunlotException::YUNLOT10_BODY_FORMAT_ERROR);
 		}
 	}
 }
