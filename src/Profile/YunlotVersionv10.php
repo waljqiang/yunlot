@@ -31,7 +31,8 @@ class YunlotVersionv10 extends YunlotVersion{
 		$this->header = [
 			"protocol" => self::VERSION,
 			"type" => "",
-			"encode" => $config["encode"]["type"]
+			"encode" => $config["encode"]["type"],
+			"mid" => $this->getRandomStr(6) . time()
 		];
 		return $this;
 	}
@@ -161,8 +162,8 @@ class YunlotVersionv10 extends YunlotVersion{
 	}
 
 	protected function checkHeader(){
-		if(!isset($this->header["protocol"]) || !isset($this->header["type"]) || !isset($this->header["encode"])){
-			throw new YunlotException("The header of yunlot v1.0 must be protocol 、type and encode",YunlotException::YUNLOT10_HEADER_FORMAT_ERROR);
+		if(!isset($this->header["protocol"]) || !isset($this->header["type"]) || !isset($this->header["encode"]) || !isset($this->header["mid"])){
+			throw new YunlotException("The header of yunlot v1.0 must be protocol 、type、encode and mid",YunlotException::YUNLOT10_HEADER_FORMAT_ERROR);
 		}
 		if($this->getHeader("protocol") == $this->getVersion()){
 			if(!in_array($this->getHeader("type"),[1,2])){
