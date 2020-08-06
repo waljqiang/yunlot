@@ -3,12 +3,12 @@ require_once __DIR__ . "/../vendor/autoload.php";
 use Waljqiang\Yunlot\Yunlot;
 try{
 	$token = "cloudnetlot";
-	$type = "2";
+	$encode = "2";
 	$key = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG";
 	$nonce = "abcdef";
 	$timestamp = "1587440903";
-	Yunlot::getInstance()->init(["encode" => ["token" => $token,"type" => $type,"key" => $key]],"v1.0");
-	Yunlot::getInstance()->setHeader(["type" => "1"]);
+	Yunlot::getInstance()->init(["encode" => ["token" => $token,"type" => $encode,"key" => $key]],"v1.0");
+	Yunlot::getInstance()->setHeader(["type" => "1","nonce" => $nonce,"timestamp" => $timestamp]);
 	Yunlot::getInstance()->setBody([
 		"system" => [
 			"name" => "CPE120M",
@@ -72,7 +72,7 @@ try{
 	echo "</pre>";
 
 	echo "----------------------------------------------";
-	Yunlot::getInstance()->init(["encode" => ["token" => $token,"type" => $type,"key" => $key]],"v1.0");
+	Yunlot::getInstance()->init(["encode" => ["token" => $token,"type" => $encode,"key" => $key]],"v1.0");
 	$b = Yunlot::getInstance()->parse($a);
 	echo "<pre>";
 	print_r($b);

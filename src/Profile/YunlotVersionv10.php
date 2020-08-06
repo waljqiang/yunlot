@@ -43,6 +43,10 @@ class YunlotVersionv10 extends YunlotVersion{
 
 	public function setHeader($headers = []){
 		$this->header = array_merge($this->header,$headers);
+		if($this->header["encode"] == 1){
+			unset($this->header["nonce"]);
+			unset($this->header["timestamp"]);
+		}
 		$this->checkHeader();
 		return $this;
 	}
