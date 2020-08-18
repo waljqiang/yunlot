@@ -3,13 +3,13 @@ require_once __DIR__ . "/../vendor/autoload.php";
 use Waljqiang\Yunlot\Yunlot;
 try{
 	$token = "cloudnetlot";
-	$encode = "2";
+	$encodetype = "2";
 	$key = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFG";
 	$nonce = "abcdef";
 	$timestamp = "1587440903";
-	Yunlot::getInstance()->init(["encode" => ["token" => $token,"type" => $encode,"key" => $key]],"v1.0");
-	Yunlot::getInstance()->setHeader(["type" => "1","nonce" => $nonce,"timestamp" => $timestamp]);
-	Yunlot::getInstance()->setBody([
+	$yunlot = new Yunlot(["protocol" => "v1.0","encodetype" => $encodetype,"token" => $token,"key" => $key]);
+	$yunlot->init()->setHeader(["type" => "1","bind" => "1sadfasdfdsdsfdsdasf"]);
+	$yunlot->setBody([
 		"system" => [
 			"name" => "CPE120M",
 			"chip" => "RTL8197F-FR350",
@@ -65,15 +65,15 @@ try{
 			"runtime" => "3600"
 		]
 	]);
-	Yunlot::getInstance()->setNow($timestamp);
-	$a = Yunlot::getInstance()->out();
+	$yunlot->setNow($timestamp);
+	$a = $yunlot->out();
 	echo "<pre>";
 	print_r($a);
 	echo "</pre>";
 
 	echo "----------------------------------------------";
-	Yunlot::getInstance()->init(["encode" => ["token" => $token,"type" => $encode,"key" => $key]],"v1.0");
-	$b = Yunlot::getInstance()->parse($a);
+	$yunlot->init();
+	$b = $yunlot->parse($a);
 	echo "<pre>";
 	print_r($b);
 	echo "</pre>";

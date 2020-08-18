@@ -22,18 +22,25 @@ class YunlotVersionv10 extends YunlotVersion{
 	 */
 	private static $encode;
 
-	public function __construct(){
-		self::$encode = new Encode();
-	}
-
-	public function init($config,$clear = true){
-		self::$encode->init($config["encode"]["token"],$this->encodeType[$config["encode"]["type"]],["key" => $config["encode"]["key"]]);
+	public function __construct($config){
+		$encode = new Encode();
+		if(!in_array($config["encodetype"],["1","2"])){
+			throw new YunlotException("The protocol of v1.0 only supports plaintext and AES encryption",YunlotException::YUNLOT10_HEADER_ENCODE_ERROR);
+		}
+		$encodeType = $this->encodeType[$config["encodetype"]];
+		$key = $config["encodetype"] == 1 ? [] : ["key" => $config["key"]];
+		$encode->init($config["token"],$encodeType,$key);
+		self::$encode = $encode;
 		$this->header = [
 			"protocol" => self::VERSION,
 			"type" => "",
-			"encode" => $config["encode"]["type"],
+			"encode" => $config["encodetype"],
 			"mid" => $this->getRandomStr(6) . time()
 		];
+	}
+
+	public function init(){
+		$this->header = array_intersect_key(["protocol" => self::VERSION,"type" => "","encode" => $this->header["encode"],"mid" => $this->getRandomStr(6) . time()],$this->header);
 		return $this;
 	}
 

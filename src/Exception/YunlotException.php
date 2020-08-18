@@ -2,6 +2,7 @@
 namespace Waljqiang\Yunlot\Exception;
 class YunlotException extends \Exception{
 	const UNSUPPORT_YUNLOT_VERSION = 400000000;//不支持的协议版本
+	const YUNLOT_PARAMS_ERROR = 400000001;//参数错误
 	//v1.0
 	const YUNLOT10_FORMAT_ERROR = 400010000;//协议格式错误
 	const YUNLOT10_HEADER_FORMAT_ERROR = 400010001;//协议头格式错误
