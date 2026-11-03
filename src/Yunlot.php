@@ -9,6 +9,7 @@ class Yunlot{
 	private static $profile;
 
 	private static $instance;
+	private string $version;
 
 	public function __construct($config){
 		if(!isset($config["protocol"]) || !isset($config["encodetype"])){
